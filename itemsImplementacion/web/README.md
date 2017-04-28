@@ -1,4 +1,4 @@
-# Vault App #
+# Preprocesamiento de Imgenes #
 
 ## Requirements ##
 * NodeJS
@@ -9,18 +9,6 @@
 ## Instructions to run the app
 1. Run command "$ npm install"
 2. Run command "$ npm start"
-
-## Deploy to heroku
-* First, make sure you have already installed the Heroku CLI, and that you're logged in as an autorized user
-
-1. Run command "$ npm run build -- --release". This will create build folder
-2. Go to build folder: "$ cd build"
-3. Create a git repository into build folder if not exists. Run command "$ git init"
-4. Set the heroku git remote: "$ heroku git:remote -a dev-vault"
-5. Add all the content to the heroku git: "$ git add ."
-6. Commit the full content to git: "$ git commit -am "commit message" 
-7. Push the changes to heroku $ git push heroku master
-
 
 
 ## React Starter Kit — "[isomorphic](http://nerds.airbnb.com/isomorphic-javascript-future-web-apps/)" web app boilerplate
