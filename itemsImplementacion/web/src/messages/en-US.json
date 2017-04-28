@@ -1,0 +1,38 @@
+[
+  {
+    "id": "navigation.login",
+    "defaultMessage": "Log in",
+    "message": "",
+    "description": "Log in link in header",
+    "files": [
+      "src/components/Navigation/Navigation.js"
+    ]
+  },
+  {
+    "id": "Results.categories",
+    "description": "Results category column title header",
+    "defaultMessage": "CATEGORIES",
+    "message": "",
+    "files": [
+      "src/routes/results/Results.js"
+    ]
+  },
+  {
+    "id": "Dashboard.categories",
+    "description": "Dashboard category column title header",
+    "defaultMessage": "CATEGORIES",
+    "message": "",
+    "files": [
+      "src/routes/dashboard/Dashboard.js"
+    ]
+  },
+  {
+    "id": "notFound.notFoundMessage",
+    "description": "Message to show in \"Not Found\" page",
+    "defaultMessage": "Sorry, the page you were trying to view does not exist.",
+    "message": "",
+    "files": [
+      "src/routes/notFound/NotFound.js"
+    ]
+  }
+]
