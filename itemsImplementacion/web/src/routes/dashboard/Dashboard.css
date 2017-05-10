@@ -17,5 +17,13 @@
 	}
 }
 
+.optionsDiv{
+	margin: 0 1em 0.6em 1em;
+	/*display: flex;*/
+	input{
+		margin: 0 0.2em;
+		width: 4em;
+	}
+}
 
 

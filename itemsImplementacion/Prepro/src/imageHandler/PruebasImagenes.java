@@ -9,14 +9,14 @@ import org.opencv.imgcodecs.Imgcodecs;
 
 public class PruebasImagenes {
 	
-	private String direc = "F:\\eclipseworkspace\\workspace\\OpenCV Testing\\";
+	private String direc = "C:\\Users\\jruiz\\Desktop\\";
 	  
 	  @Test
 	  public void probarguardadocarga() {
 	    System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 	    try {
 	      ImageHandler imgh = new ImageHandler();
-	      String imgname = "input.tif";
+	      String imgname = "prueba.png";
 	      Mat img = new Mat(); 
 	      img = imgh.cargarimg(direc, imgname);
 	      imgh.setDir(direc);
@@ -39,7 +39,7 @@ public class PruebasImagenes {
 	    System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 	    ImageHandler imgh = new ImageHandler();
 	    //AGREGAR NOISE 
-	    String imgname = "input.tif";
+	    String imgname = "prueba.png";
 	    Mat img = new Mat(); 
 	    img = imgh.cargarimg(direc, imgname);
 	    Mat imgaux = img.clone();
@@ -49,7 +49,7 @@ public class PruebasImagenes {
 	    double mse = imgh.getmse(img1, img2);
 	    int mseint = (int)mse;
 	    // 1940 es el entero esperado para el mse
-	    assertEquals(mseint,1940);
+	    assertEquals(mseint,2030);
 	    
 	  }
 	  
@@ -58,7 +58,7 @@ public class PruebasImagenes {
 	  public void pruebapsnr() {
 	    System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 	    ImageHandler imgh = new ImageHandler();
-	    String imgname = "input.tif";
+	    String imgname = "prueba.png";
 	    Mat img = new Mat(); 
 	    img = imgh.cargarimg(direc, imgname);
 	    Mat imgaux = img.clone();
@@ -79,7 +79,7 @@ public class PruebasImagenes {
 	      ImageHandler imgh = new ImageHandler();
 	      //define el directorio donde guardara las imagenes
 	      
-	      String imgname = "input.tif";
+	      String imgname = "prueba.png";
 	      Mat img = new Mat(); 
 	      img = imgh.cargarimg(direc, imgname);
 	      imgh.setDir(direc);
@@ -105,7 +105,7 @@ public class PruebasImagenes {
 	      ImageHandler imgh = new ImageHandler();
 	      
 	      
-	      String imgname = "input.tif";
+	      String imgname = "prueba.png";
 	      Mat img = new Mat(); 
 	      img = imgh.cargarimg(direc, imgname);
 	      
@@ -129,7 +129,7 @@ public class PruebasImagenes {
 	      System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 	      ImageHandler imgh = new ImageHandler();
 	      //AGREGAR NOISE 
-	      String imgname = "input.tif";
+	      String imgname = "prueba.png";
 	      Mat img = new Mat(); 
 	      img = imgh.cargarimg(direc, imgname);
 	      Mat imgaux = img.clone();
@@ -152,7 +152,7 @@ public class PruebasImagenes {
 	      ImageHandler imgh = new ImageHandler();
 	     
 	      
-	      String imgname = "input.tif";
+	      String imgname = "prueba.png";
 	      Mat img = new Mat(); 
 	      img = imgh.cargarimg(direc, imgname);
 	      
@@ -176,7 +176,7 @@ public class PruebasImagenes {
 	      ImageHandler imgh = new ImageHandler();
 	     
 	      
-	      String imgname = "input.tif";
+	      String imgname = "prueba.png";
 	      Mat img = new Mat(); 
 	      img = imgh.cargarimg(direc, imgname);
 	      
@@ -199,7 +199,7 @@ public class PruebasImagenes {
 	      System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 	      ImageHandler imgh = new ImageHandler();
 	      //AGREGAR NOISE 
-	      String imgname = "input.tif";
+	      String imgname = "prueba.png";
 	      Mat img = new Mat(); 
 	      img = imgh.cargarimg(direc, imgname);
 	      Mat imgaux = img.clone();
@@ -221,7 +221,7 @@ public class PruebasImagenes {
 	      System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 	      ImageHandler imgh = new ImageHandler();
 	      //AGREGAR NOISE 
-	      String imgname = "input.tif";
+	      String imgname = "prueba.png";
 	      Mat img = new Mat(); 
 	      img = imgh.cargarimg(direc, imgname);
 	      Mat imgaux = img.clone();
@@ -243,7 +243,7 @@ public class PruebasImagenes {
 	      System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 	      ImageHandler imgh = new ImageHandler();
 	      //AGREGAR NOISE 
-	      String imgname = "input.tif";
+	      String imgname = "prueba.png";
 	      Mat img = new Mat(); 
 	      img = imgh.cargarimg(direc, imgname);
 	      Mat imgaux = img.clone();
@@ -263,7 +263,7 @@ public class PruebasImagenes {
 	    final long startTime = System.currentTimeMillis();
 	    System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 	    ImageHandler imgh = new ImageHandler();
-	    String imgname = "input.tif";
+	    String imgname = "prueba.png";
 	    Mat img = new Mat(); 
 	    img = imgh.cargarimg(direc, imgname);
 	    Mat imgaux = img.clone();

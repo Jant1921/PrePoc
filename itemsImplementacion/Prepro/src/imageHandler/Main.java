@@ -21,7 +21,26 @@ import java.io.IOException;
 
 public class Main {
 	static {System.loadLibrary(Core.NATIVE_LIBRARY_NAME);}
-	public static void procesar(String pToken,String pName){
+	private static int[] matrizGauss = {8,8};
+	private static double desviacionGauss = 0.0;
+	private static int[] matrizBilateral = {10,10};
+	private static double[] desviacionesBilateral = {2.0,8.0};
+	public static boolean doGauss = false;
+	public static boolean doBilateral = false;
+	
+	public static void setGaussValues(int[] matriz,double desviacion){
+		matrizGauss = matriz;
+		desviacionGauss = desviacion;
+		doGauss = true;
+	}
+	
+	public static void setBilateralValues(int[] matriz,double[] desviacion){
+		matrizBilateral = matriz;
+		desviacionesBilateral = desviacion;
+		doBilateral = true;
+	}
+	
+	public static double[] procesar(String pToken,String pName, int noiseRatio){
 		
 		//se carga la libreria para evitar errores 
 		
@@ -38,31 +57,16 @@ public class Main {
 		//direc="F:\\eclipseworkspace\\workspace\\OpenCV Testing\\";
 		//imgname="01.png";
 		
-		direc="C:\\Users\\jruiz\\Documents\\workspace\\Prepro\\uploaded_images\\"+pToken+"\\";
+		direc="C:\\Users\\jruiz\\Documents\\PrePoc\\itemsImplementacion\\uploaded_images\\"+pToken+"\\";
 		imgname=pName;
 		
 		
-		//carga matriz de imagen en img
-		img = imgh.cargarimg(direc, imgname);
-	
-	 
-		 //escribe la imagen recien leida
-		 //imgh.setDir(direc);
-		 //imgh.setImgname("imagtest1.tif");
-		 //imgh.guardarimg(img);
-		 
-		 
-		
-		
+		 //carga matriz de imagen en img
+		 img = imgh.cargarimg(direc, imgname);
 		 //escribre la imagen en escala de grises
-		//
 		 Imgproc.cvtColor(img, prueba, Imgproc.COLOR_RGB2GRAY);
-		 
 		 prueba=img.clone();
-		 
 		 prueba=imgh.imgtograyscale(prueba);
-		 //imgname= "pruebagrayscale.tif";	 
-
 		 imgh.setDir(direc);
 		 imgh.setImgname("gris_"+imgname);
 		 imgh.guardarimg(prueba);
@@ -71,64 +75,61 @@ public class Main {
 		 
 		 //copia el estado actual de variable prueba(matriz en escala de grises)
 		 Mat respaldo = prueba.clone();
-		 Mat respaldo2 = prueba.clone();		 
-		 Mat respaldo3 = prueba.clone();
-		 Mat respaldo4 = prueba.clone();
-		 Mat respaldo5 = prueba.clone();
-		 //Mat respaldo6 = prueba.clone();
+		 
+		 if(doGauss){
+			 //aplica el filtro gaussiano a la imagen
+			 Mat respaldo2 = prueba.clone();		 
+			 Mat gaus=imgh.filtrogaus(respaldo2, matrizGauss[0], matrizGauss[1], desviacionGauss);
+			 imgh.setDir(direc);
+			 imgh.setImgname("gauss_"+imgname);
+			 imgh.guardarimg(gaus);
+			 
+			 //crea una matriz para apoyo
+			 Mat clahe_gauss= prueba.clone();
+			 //utilizacion del algoritmo clahe para el bilateral
+			 clahe_gauss=imgh.clahe(gaus);
+			 //guardar la imagen modificada por clahe
+			 imgh.setImgname("claheGauss_"+imgname);
+			 imgh.guardarimg(clahe_gauss);
+		 }
+		 
+		 //clahe a imagen en escala de grises
+		//crea una matriz para apoyo
+		 Mat clahe_gris= prueba.clone();
+		 //utilizacion del algoritmo clahe para el bilateral
+		 clahe_gris=imgh.clahe(clahe_gris);
+		 //guardar la imagen modificada por clahe
+		 imgh.setImgname("claheGris_"+imgname);
+		 imgh.guardarimg(clahe_gris);
+		 
+		 
 		 Mat respaldo7 = prueba.clone();
-
-		 
-		 //aplica el filtro gaussiano a la imagen
-		 Mat gaus=imgh.filtrogaus(respaldo2, 8, 8, 2);
-		 //imgname= "pruebagauss1.tif";	 
-		 imgh.setDir(direc);
-		 imgh.setImgname("gauss_"+imgname);
-		 imgh.guardarimg(gaus);
-		 
-		 
 		 Mat image = respaldo7.clone();
-		 
-		 image=imgh.addnoise(image,28);
-	        
-	     //imgname= "pruebanoise.tif";  
+		 image=imgh.addnoise(image,noiseRatio);
 	     imgh.setDir(direc);
 	     imgh.setImgname("noise_"+imgname);
 	     imgh.guardarimg(image);  
 		 
-		
-		 //aplica el filtro bilateral a la imagen
-		 Mat bilateral=imgh.filtrobilateral(respaldo3, 10, 10, 2, 8);
-		 //imgname= "pruebabilateral1.tif";	 
-		 imgh.setDir(direc);
-		 imgh.setImgname("bilateral_"+imgname);
-		 imgh.guardarimg(bilateral);	
-			
-		 //bilateral de opencv
-		 /*
-		 Imgproc.bilateralFilter ( respaldo4, respaldo5, 10, 15, 8 );
-		 imgname= "pruebabilateral2opencv.tif";	 
-		 imgh.setDir(direc);
-		 imgh.setImgname(imgname);
-		 imgh.guardarimg(respaldo5);
-		 */
-		 
-		
-				 
-		
-		 //crea una matriz para apoyo
-		 Mat img2= prueba;
-		 
-		 
-		 //utilizacion del algoritmo clahe
-		 img2=imgh.clahe(bilateral);
-		
-		
-		 
-		 //guardar la imagen modificada por clahe
-		 //imgname="pruebaclahe2.tif";
-		 imgh.setImgname("clahe_"+imgname);
-		 imgh.guardarimg(img2);
+	     
+	     
+		if(doBilateral){
+			 //aplica el filtro bilateral a la imagen
+		     Mat respaldo3 = prueba.clone();
+			 Mat bilateral=imgh.filtrobilateral(respaldo3, matrizBilateral[0], matrizBilateral[1], desviacionesBilateral[0], desviacionesBilateral[1]); 
+			 imgh.setDir(direc);
+			 imgh.setImgname("bilateral_"+imgname);
+			 imgh.guardarimg(bilateral);	
+				
+			 
+					
+			 //crea una matriz para apoyo
+			 Mat img2= prueba.clone();
+			 //utilizacion del algoritmo clahe para el bilateral
+			 img2=imgh.clahe(bilateral);
+			 //guardar la imagen modificada por clahe
+			 imgh.setImgname("clahe_"+imgname);
+			 imgh.guardarimg(img2);
+		}
 		 
 		 
 
@@ -155,7 +156,8 @@ public class Main {
 		 
 		 System.out.println("psnr "+psnr);
 		 
-		
+		double[] results = {mse,ad,mae,ae,psnr};
+		return results;
 		 
 		 
 		
