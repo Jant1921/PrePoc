@@ -22,12 +22,22 @@ public class Main {
 	public static boolean doGauss = false;
 	public static boolean doBilateral = false;
 	
+	/**
+	 * Configura los valores con los que se va a aplicar el filtro gaussiano
+	 * @param matriz contiene tamaños para el kernel 
+	 * @param desviacion desviacion con la que aplica el filtro
+	 */
 	public static void setGaussValues(int[] matriz,double desviacion){
 		matrizGauss = matriz;
 		desviacionGauss = desviacion;
 		doGauss = true;
 	}
 	
+	/**
+	 * Configura los valores con los que se va a aplicar el filtro bilateral
+	 * @param matriz contiene tamaños para el kernel
+	 * @param desviacion grado de desviacion que se aplica, contiene 2 valores
+	 */
 	public static void setBilateralValues(int[] matriz,double[] desviacion){
 		matrizBilateral = matriz;
 		desviacionesBilateral = desviacion;
