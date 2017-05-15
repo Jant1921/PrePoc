@@ -49,7 +49,7 @@ public class PruebasImagenes {
 	    double mse = imgh.getmse(img1, img2);
 	    int mseint = (int)mse;
 	    // 1940 es el entero esperado para el mse
-	    assertEquals(mseint,2030);
+	    assertEquals(mseint,2045);
 	    
 	  }
 	  
@@ -134,7 +134,7 @@ public class PruebasImagenes {
 	      img = imgh.cargarimg(direc, imgname);
 	      Mat imgaux = img.clone();
 	      Mat img1 = imgh.imgtograyscale(img);
-	      Mat img2 = imgh.addnoise(imgaux, 128);
+	      Mat img2 = imgh.addnoise(imgaux, 100);
 	      imgname = "pruebaimgnoise.jpg";
 	      imgh.setImgname(imgname);
 	      imgh.guardarimg(img2);
