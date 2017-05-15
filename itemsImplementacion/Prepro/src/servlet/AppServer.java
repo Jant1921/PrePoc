@@ -7,12 +7,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.opencv.core.Mat;
-import org.opencv.core.Core;
-import org.opencv.core.CvType;
 
 /**
  * Servlet implementation class AppServer
+ */
+/**
+ * Servlet implementation class AppServer
+ * Provee una interfaz que se encarga de manejar peticiones externas a la aplicacion
+ * @author  Edward Rodriguez, Jose Ruiz
+ * @version 1.0.2, 23 Abril 2017
  */
 @WebServlet("/AppServer")
 public class AppServer extends HttpServlet {
@@ -23,7 +26,6 @@ public class AppServer extends HttpServlet {
      */
     public AppServer() {
         super();
-        // TODO Auto-generated constructor stub
     }
     
     
@@ -32,7 +34,7 @@ public class AppServer extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		response.getWriter().append("Served at: \n").append(request.getContextPath()+"\n");
+        response.getWriter().append("Served at: \n").append(request.getContextPath()+"\n");
 		String token = request.getParameter("token");
 		String rutaImagenes = request.getParameter("images");
 		String gauss = request.getParameter("gauss");
@@ -40,10 +42,8 @@ public class AppServer extends HttpServlet {
 		int noiseRatio = 250;
 		if(request.getParameter("noise")!=null){
 			noiseRatio = Integer.parseInt(request.getParameter("noise"));
-			System.out.println("se pasa el ruido");
-		}else{
-			System.out.println("no se pasa el ruido");
 		}
+		//TODO
 		//String clahe = request.getParameter("clahe");
 		
 		if(rutaImagenes!=null && token!=null ){
@@ -64,7 +64,6 @@ public class AppServer extends HttpServlet {
 					matrizGauss[0] = Integer.parseInt(gaussParamsArray[0]);
 					matrizGauss[1] = Integer.parseInt(gaussParamsArray[1]);
 					desviacionGauss = Double.parseDouble(gaussParamsArray[2]);
-					response.getWriter().append("es:"+desviacionGauss+"\n");
 					imageHandler.Main.setGaussValues(matrizGauss,desviacionGauss);
 				}else{
 					response.getWriter().append("Error: Debe Rellenar todos los parámetros para el filtro Gaussiano\n");
@@ -75,13 +74,11 @@ public class AppServer extends HttpServlet {
 			}
 			if(bilateral!= null){
 				String[] bilateralParamsArray = bilateral.split(",");
-				response.getWriter().append("bilateral="+bilateralParamsArray.length+"\n");
 				if(bilateralParamsArray.length==4){
 					matrizBilateral[0] = Integer.parseInt(bilateralParamsArray[0]);
 					matrizBilateral[1] = Integer.parseInt(bilateralParamsArray[1]);
 					desviacionesBilateral[0] = Double.parseDouble(bilateralParamsArray[2]);
 					desviacionesBilateral[1] = Double.parseDouble(bilateralParamsArray[3]);
-					response.getWriter().append("es:"+desviacionesBilateral[1]+"\n");
 					imageHandler.Main.setBilateralValues(matrizBilateral,desviacionesBilateral);
 				}else{
 					response.getWriter().append("Error: Debe Rellenar todos los parámetros para el filtro Bilateral\n");
@@ -90,12 +87,13 @@ public class AppServer extends HttpServlet {
 			}else{
 				imageHandler.Main.doBilateral = false;
 			}
+			//TODO
 			/*
 			if(clahe!= null){
 				
 			}else{
 				else{
-					imageHandler.Main. = false;
+					imageHandler.Main.doClahe = false;
 				}
 			}*/
 			String valoresMetricas = "";
@@ -111,15 +109,12 @@ public class AppServer extends HttpServlet {
 				valoresMetricas+="+";
 			}
 			valoresMetricas = valoresMetricas.substring(0, valoresMetricas.length()-1);
-			response.getWriter().append("metricas= "+valoresMetricas);
+			response.getWriter().append("Procesando...");
 			
 			response.sendRedirect("http://192.168.43.129:3001/results?token="+token+"&images="+request.getParameter("images")+"&metricas="+valoresMetricas);
 		}else{
 			response.getWriter().append("Error: Debe seleccionar la menos una imagen para procesar\n");
 		}
-		
-		//imageHandler.Main.procesar("Tfup","cmamo.jpg");
-		//imageHandler.Main.procesar("uno.jpg");
 		
 	}
 
@@ -127,8 +122,6 @@ public class AppServer extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		//imageHandler.Main.procesar("uno.jpg");
 		doGet(request, response);
 	}
 

@@ -6,10 +6,17 @@ import org.opencv.core.Scalar;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
+/**
+ * Clase que se encarga de realizar todos los procesamientos
+ * relacionados con el manejo de imagenes y filtros
+ * @author  Daniel Estrada
+ * @version 1.0.2, 14 Mayo 2017
+ */
+
 public class ImageHandler {
 
   private String dir = "F:\\eclipseworkspace\\workspace\\OpenCV Testing\\";
-  private String imgname = "prueba2.tif";
+  private String imgName = "prueba2.tif";
 
 
 
@@ -21,7 +28,7 @@ public class ImageHandler {
    * @param imgname string referente al nombre de la imagen
   */
 
-    public void guardarimg(Mat img, String dir, String imgname) {
+    public void guardarImg(Mat img, String dir, String imgname) {
       Imgcodecs.imwrite(dir + imgname, img);
     }
 
@@ -29,8 +36,8 @@ public class ImageHandler {
    * guarda la matriz como una imagen
    * @param img matriz que contiene la informacion de los pixeles de la imagen
    */
-    public void guardarimg(Mat img) {
-      Imgcodecs.imwrite(dir + imgname, img);
+    public void guardarImg(Mat img) {
+      Imgcodecs.imwrite(dir + imgName, img);
     }
 
   /**
@@ -39,7 +46,7 @@ public class ImageHandler {
    * @param imgname string referente al nombre de la imagen
    * @return la matriz referente a la imagen cargada
    */
-    public Mat cargarimg(String dir,String imgname) {
+    public Mat cargarImg(String dir,String imgname) {
       Mat img = Imgcodecs.imread(dir + imgname);
       return img;
     }
@@ -48,13 +55,14 @@ public class ImageHandler {
    * genera la matriz de la imagen ubicada segun el folder y nombre
    * @return la matriz referente a la imagen cargada
    */
-    public Mat cargarimg() {
-      Mat img = Imgcodecs.imread(dir + imgname,0);
+    public Mat cargarImg() {
+      Mat img = Imgcodecs.imread(dir + imgName,0);
       return img;
     }
 
   /**
    * Aplica Contrast Limited Adaptive Histogram Equalization a la matriz referente a una imagen
+   * @see http://docs.opencv.org/java/2.4.9/org/opencv/imgproc/CLAHE.html
    * @param img matriz de una imagen
    * @return la matriz de imagen modificada 
    */
@@ -72,7 +80,7 @@ public class ImageHandler {
    * @param  img  corresponde a la matriz de la imagen  
    * @return      la matriz de la imagen en formato de escala de grises
    */
-    public Mat imgtograyscale(Mat img) {
+    public Mat imgToGrayScale(Mat img) {
       Mat resultado = new Mat();
       Imgproc.cvtColor(img, resultado, Imgproc.COLOR_RGB2GRAY);
       return resultado;
@@ -83,11 +91,13 @@ public class ImageHandler {
 
   /**
    * calcula el  mean squared error
+   * Basado en la formula descrita en el punto 2.1 del documento Proyecto2.pdf
+   * https://www.dropbox.com/sh/ih439k2p0szpxh0/AAAwJBWTF4sX2eshm-v_rfyYa/Proyectos?dl=0&preview=Proyecto2.pdf
    * @param img  Mat de la imagen original
    * @param ruido Mat de la imagen con ruido
    * @return el mse calculado en base a las 2 imagenes
    */
-    public double getmse(Mat img, Mat ruido) {
+    public double getMse(Mat img, Mat ruido) {
       double mse;
       int sum = 0;
       double[] val1 = new double[1];
@@ -112,10 +122,12 @@ public class ImageHandler {
 
   /**
    * calcula el peak signal to noise ratio
+   * Basado en la formula descrita en el punto 2.1 del documento Proyecto2.pdf
+   * https://www.dropbox.com/sh/ih439k2p0szpxh0/AAAwJBWTF4sX2eshm-v_rfyYa/Proyectos?dl=0&preview=Proyecto2.pdf
    * @param mse es el mean quared error
    * @return un double con el valor del psnr
    */
-    public double getpsnr(double mse) {
+    public double getPsnr(double mse) {
       int max = 255;
       double psnr = (20 * Math.log10(max)) - (10 * Math.log10(mse));
       
@@ -128,7 +140,7 @@ public class ImageHandler {
     * @param ruido imagen contaminada
     * @return calculo del mae
     */
-    public double getmae(Mat img, Mat ruido) { //mean absolute error
+    public double getMae(Mat img, Mat ruido) { //mean absolute error
       double mae;
       int sum = 0;
       double[] val1 = new double[1];
@@ -157,7 +169,7 @@ public class ImageHandler {
     * @param ruido imagen contaminada
     * @return calculo del ad
     */
-    public double getad(Mat img, Mat ruido) { 
+    public double getAd(Mat img, Mat ruido) { 
       double ad;
       int sum = 0;
       double[] val1 = new double[1];
@@ -188,7 +200,7 @@ public class ImageHandler {
      * @param ruido imagen contaminada
      * @return calculo del ae
      */  
-    public double getae(Mat img, Mat ruido) { //absolute error
+    public double getAe(Mat img, Mat ruido) { //absolute error
       double ae;
       int sum = 0;
       double[] val1 = new double[1];
@@ -233,39 +245,41 @@ public class ImageHandler {
    * @return string con el nombre del archivo a generar
    */
     public String getImgname() {
-      return imgname;
+      return imgName;
     }
 
     /**
    * Setea el valor del nombre de la imagen a crear
-   * @param imgname string para setear el nombre del archivo a crear
+   * @param imgName string para setear el nombre del archivo a crear
    */
-    public void setImgname(String imgname) {
-      this.imgname = imgname;
+    public void setImgname(String imgName) {
+      this.imgName = imgName;
     }
     
     /**
-   * 
+   * Toma un mat, de la imagen cargada y le aplica el filtro gaussiano
+   * Basado en la formula descrita en el punto 2 del documento Proyecto2.pdf
+   * https://www.dropbox.com/sh/ih439k2p0szpxh0/AAAwJBWTF4sX2eshm-v_rfyYa/Proyectos?dl=0&preview=Proyecto2.pdf
    * @param img matriz con los datos de imagen    
-   * @param ksizer filas del kernel
-   * @param ksizec columnas del kernel
+   * @param kernelSizeRow filas del kernel
+   * @param kernelSizeColumn columnas del kernel
    * @param desv desviacion estandar
    * @return matriz con el filtro aplicado
    */
-    public Mat filtrogaus(Mat img,int ksizer,int ksizec,double desv) {
+    public Mat filtroGauss(Mat img,int kernelSizeRow,int kernelSizeColumn,double desv) {
       Mat result = img;
      
       int w;
       int h;
-      double valormat;
+      double valorMat;
       w = img.width();
       h = img.height();
 
       for (int i = 0; i < h;i++) {
         for (int j = 0; j < w;j++) {
 
-          valormat = img.get(i, j)[0];
-          result = gaussauxiliar(i,j,ksizer,ksizec,desv,valormat,result);
+          valorMat = img.get(i, j)[0];
+          result = gaussAuxiliar(i,j,kernelSizeRow,kernelSizeColumn,desv,valorMat,result);
 
         }
       }
@@ -275,38 +289,40 @@ public class ImageHandler {
     }
 
     /**
-     * 
+     * funcion auxiliar de la funcion filtroGauss
+     * Basado en la formula descrita en el punto 2 del documento Proyecto2.pdf
+     * https://www.dropbox.com/sh/ih439k2p0szpxh0/AAAwJBWTF4sX2eshm-v_rfyYa/Proyectos?dl=0&preview=Proyecto2.pdf
      * @param x valor de referencia para el kernel
      * @param y valor de referencia para el kernel
-     * @param ksizer filas del kernel
-     * @param ksizec columnas del kernel
+     * @param kernelSizeR filas del kernel
+     * @param kernelSizeColumn columnas del kernel
      * @param desv desviacion estandar
      * @param valormat valor en el pixel actual
      * @param img matriz de imagen
      * @return imagen con el kernel aplicado para el pixel
      */
-    public Mat gaussauxiliar(int x, int y, int ksizer,int ksizec,double desv,
+    public Mat gaussAuxiliar(int x, int y, int kernelSizeR,int kernelSizeColumn,double desv,
                              double valormat,Mat img) {
 
-      int umin = (x + 1) - ((ksizer - 1) / 2);
-      int umax = (x + 1) + ((ksizer - 1) / 2);
-      int vmax = (y + 1) + ((ksizec - 1) / 2);
-      int vmin = (y + 1) - ((ksizec - 1) / 2);
+      int uMin = (x + 1) - ((kernelSizeR - 1) / 2);
+      int uMax = (x + 1) + ((kernelSizeR - 1) / 2);
+      int vMax = (y + 1) + ((kernelSizeColumn - 1) / 2);
+      int vMin = (y + 1) - ((kernelSizeColumn - 1) / 2);
       double[] val1 = new double[1];
       Mat resultado = img;
       double suma = 0;
       double alfa = 0;
 
-      for (int i = umin;i < umax;i++) {
-        for (int j = vmin;j < vmax;j++) {
+      for (int i = uMin;i < uMax;i++) {
+        for (int j = vMin;j < vMax;j++) {
 
           if (x - i < 0 || y - j < 0 || i < 0 || j < 0) {
             suma += 0;
           } else {
-            double kernelval = getkernel(x - i,y - j,desv);
-            alfa += kernelval;
+            double kernelVal = getKernel(x - i,y - j,desv);
+            alfa += kernelVal;
             val1[0] = img.get(i,j)[0];
-            suma += kernelval * val1[0];
+            suma += kernelVal * val1[0];
           }
 
 
@@ -324,13 +340,13 @@ public class ImageHandler {
     }
 
   /**
-   * 
+   * Obtiene el kertel en un punto especifico
    * @param x punto de referencia
    * @param y punto de referencia
    * @param desv desviacion estandar
    * @return valor del kernel en el punto especifico
    */
-    public double getkernel(int x,int y,double desv) {
+    public double getKernel(int x,int y,double desv) {
       double val = Math.exp(- (((x * x) + (y * y)) / (2 * (desv * desv))));
       return val;
     }
@@ -338,13 +354,13 @@ public class ImageHandler {
     
     
   /**
-   * 
+   * obtiene el alfa de una imagen
    * @param matriz matriz de imagen
    * @param h height
    * @param w weight
    * @return entero con el valor de alfa
    */
-    public int getalfa(Mat matriz,int h, int w) {
+    public int getAlfa(Mat matriz,int h, int w) {
       int alfa = 0;
       double[] val1 = new double[1];
       for (int i = 0; i < h; i++) {
@@ -363,29 +379,31 @@ public class ImageHandler {
 
 
   /**
-   * 
+   * aplica el filtro bilateral de una imagen
+   * Basado en la formula descrita en el punto 2 del documento Proyecto2.pdf
+   * https://www.dropbox.com/sh/ih439k2p0szpxh0/AAAwJBWTF4sX2eshm-v_rfyYa/Proyectos?dl=0&preview=Proyecto2.pdf
    * @param img matriz de imagen
-   * @param ksizer filas del kernel
-   * @param ksizec columnas del kernel
+   * @param kernelSizeR filas del kernel
+   * @param kernelSizeColumn columnas del kernel
    * @param desv desviacion del dominio de la intensidad
      * @param desvr desviacion del dominio del espacio
    * @return matriz con filtro bilateral aplicado
    */
-    public Mat filtrobilateral(Mat img,int ksizer,int ksizec,double desv,double desvr) {
+    public Mat filtroBilateral(Mat img,int kernelSizeR,int kernelSizeColumn,double desv,double desvr) {
       Mat result = img;
     
       int w;
       int h;
      
-      double valormat;
+      double valorMat;
       w = img.width();
       h = img.height();
       
       for (int i = 0; i < h;i++) {
         for (int j = 0; j < w;j++) {
 
-          valormat = img.get(i, j)[0];
-          result = bilateralauxiliar(i,j,ksizer,ksizec,desv,desvr,valormat,result);
+          valorMat = img.get(i, j)[0];
+          result = bilateralAuxiliar(i,j,kernelSizeR,kernelSizeColumn,desv,desvr,valorMat,result);
 
         }
       }
@@ -396,39 +414,41 @@ public class ImageHandler {
     }
 
   /**
-   *   
-   * @param x  valor de referencia para el kernel
-   * @param y  valor de referencia para el kernel
-   * @param ksizer filas del kernel
-   * @param ksizec columnas del kernel
+   *  funcion auxiliar de filtroBilateral()
+   * Basado en la formula descrita en el punto 2 del documento Proyecto2.pdf
+   * https://www.dropbox.com/sh/ih439k2p0szpxh0/AAAwJBWTF4sX2eshm-v_rfyYa/Proyectos?dl=0&preview=Proyecto2.pdf
+   * @param x  valor en pixeles de referencia para el kernel
+   * @param y  valor en pixeles de referencia para el kernel
+   * @param kernelSizeR filas del kernel en pixeles
+   * @param kernelSizeColumn columnas del kernel en pixeles
    * @param desv desviacion del dominio de la intensidad
      * @param desvr desviacion del dominio del espacio
-   * @param valormat valor en el punto actual de la matriz imagen
+   * @param valorMat valor en el punto actual de la matriz imagen
    * @param img matriz imagen
    * @return matriz con el kernel aplicado al pixel actual
    */
-    public Mat bilateralauxiliar(int x, int y, int ksizer,int ksizec,
-                                 double desv,double desvr,double valormat,Mat img) {
+    public Mat bilateralAuxiliar(int x, int y, int kernelSizeR,int kernelSizeColumn,
+                                 double desv,double desvr,double valorMat,Mat img) {
 
-      int umin = (x + 1) - ((ksizer - 1) / 2);
-      int umax = (x + 1) + ((ksizer - 1) / 2);
-      int vmax = (y + 1) + ((ksizec - 1) / 2);
-      int vmin = (y + 1) - ((ksizec - 1) / 2);
+      int uMin = (x + 1) - ((kernelSizeR - 1) / 2);
+      int uMax = (x + 1) + ((kernelSizeR - 1) / 2);
+      int vMax = (y + 1) + ((kernelSizeColumn - 1) / 2);
+      int vmin = (y + 1) - ((kernelSizeColumn - 1) / 2);
       double[] val1 = new double[1];
       Mat resultado = img;
       double suma = 0;
       double alfa = 0;
 
-      for (int i = umin; i < umax;i++) {
-        for (int j = vmin; j < vmax;j++) {
+      for (int i = uMin; i < uMax;i++) {
+        for (int j = vmin; j < vMax;j++) {
 
           if (x - i < 0 || y - j < 0 || i < 0 || j < 0) {
             suma += 0;
           } else {
             val1[0] = img.get(i,j)[0];
-            double kernelval = getkernelbilateral(x - i,y - j,desv,desvr,valormat,val1[0]);
-            alfa += kernelval;
-            suma += kernelval * val1[0];
+            double kernelVal = getKernelBilateral(x - i,y - j,desv,desvr,valorMat,val1[0]);
+            alfa += kernelVal;
+            suma += kernelVal * val1[0];
           }
           
           
@@ -446,36 +466,32 @@ public class ImageHandler {
 
 
     /**
-     * 
+     *  obtiene el kernel en una ubicacion especifica
      * @param x valor de referencia para el kernel
      * @param y valor de referencia para el kernel
      * @param desv desviacion del dominio de la intensidad
      * @param desvr desviacion del dominio del espacio
-     * @param valpixel valor del pixel actual
-     * @param pixelrelatkernel valor del pixel en la matriz actual del kernel
+     * @param valPixel valor del pixel actual
+     * @param pixelRelatKernel valor del pixel en la matriz actual del kernel
      * @return valor del kernel en el punto
      */
-    public double getkernelbilateral(int x,int y,double desv,double desvr,
-                                     double valpixel,double pixelrelatkernel) {
+    public double getKernelBilateral(int x,int y,double desv,double desvr,
+                                     double valPixel,double pixelRelatKernel) {
     
-
-      //double val = Math.pow(Math.E, -1 * ((x * x + y * y) / (2 * desvr * desvr))) 
-      //  * Math.pow(Math.E , -1 * (Math.pow((pixelrelatkernel - valpixel), 2) / (2 * desv * desv))); 
-
       double val = Math.pow(Math.E, (-1 * ((x * x + y * y) / (2 * desv * desv)) 
-          -  (Math.pow((pixelrelatkernel - valpixel), 2) / (2 * desvr * desvr)))); 
+          -  (Math.pow((pixelRelatKernel - valPixel), 2) / (2 * desvr * desvr)))); 
        
       
       return val;
     }
 
     /**
-     * 
+     * Agrega ruido artificial a una imagen
      * @param image matriz de imagen
      * @param noise double con el factor de ruido
      * @return matriz con ruido
      */
-    public Mat addnoise(Mat image, double noise) {
+    public Mat addNoise(Mat image, double noise) {
       Mat grayRnd = new Mat(image.rows(), image.cols(), image.type());
       grayRnd.setTo(new Scalar(noise / 2, noise / 2, noise / 2));
       Core.subtract(image, grayRnd, image);
