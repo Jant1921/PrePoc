@@ -14,6 +14,16 @@ const messages = defineMessages({
   }
 });
 
+const imageVariantsList = {
+    'Original':'/',
+    'Escala de Grises':'/gris_',
+    'Imagen con Ruido':'/noise_',
+    'Filtro Bilateral':'/bilateral_',
+    'Clahe':'/clahe_',
+    'Clahe Gauss':'/claheGauss_',
+    'Clahe Escala de Grises' : '/claheGris_',
+    'Filtro Gaussiano':'/gauss_',
+};
 
 
 class Results extends React.Component {
@@ -28,6 +38,10 @@ class Results extends React.Component {
     };
 
   } 
+
+  componentDidMount() {
+      this.getImages();
+  }
 
   /**
    * Retrieved from 
@@ -66,138 +80,87 @@ class Results extends React.Component {
     return palabra;
   }
 
-  getImages(){
-    //console.log(((decodeURI(this.gup('images'))).split(','))[0]);
-    const images = (decodeURI(this.gup('images'))).split(',');
-
-    //const images = [];
-    this.setState({testId:this.gup('token')});
-    let tokenID = this.gup('token');
-    let imgTags = images.map((route,key)=>{
-      let imgName = route.split('\\');
-      imgName = imgName[imgName.length-1];
-      console.log(route);
-      return (
-        <div className={styles.resultContainer} key={key}>
-          <h2>Imagen: {imgName}</h2>
-          <div>
-            <div>
-              <p>Original</p>
-              <img className={styles.uploaded_image} src={IMAGE_SERVER_URL+this.removerComillas(route)} />     
-            </div>
-            <div>
-              <p>Clahe</p>
-              <img className={styles.uploaded_image} src={IMAGE_SERVER_URL+'/uploaded_images/'+tokenID+'/clahe_'+this.removerComillasNombre(imgName)} />       
-            </div>
-            <div>
-              <p>Filtro Gaussiano</p>
-              <img className={styles.uploaded_image} src={IMAGE_SERVER_URL+'/uploaded_images/'+tokenID+'/gauss_'+this.removerComillasNombre(imgName)} />       
-            </div>
-            <div>
-              <p>Escala de Grises</p>
-              <img className={styles.uploaded_image} src={IMAGE_SERVER_URL+'/uploaded_images/'+tokenID+'/gris_'+this.removerComillasNombre(imgName)} />       
-            </div>
-            <div>
-              <p>Imagen con Ruido</p>
-              <img className={styles.uploaded_image} src={IMAGE_SERVER_URL+'/uploaded_images/'+tokenID+'/noise_'+this.removerComillasNombre(imgName)} />       
-            </div>
-            <div>
-              <p>Filtro Bilateral</p>
-              <img className={styles.uploaded_image} src={IMAGE_SERVER_URL+'/uploaded_images/'+tokenID+'/bilateral_'+this.removerComillasNombre(imgName)} />       
-            </div>
-          </div>
-          <div>
-            <p> Timestamp: {Date.now()}</p>
-            <p> Info 2</p>
-            <p> Info 3</p>
-          </div>
-        </div>
-      )
-    });
-    this.setState({imgTags:imgTags});
-  }
-  
-  llamarAJava(){
-    // application/x-www-form-urlencoded
-
-    let details = {
-        usuario:'joseA',
-        clave:'123355'
-    };
-
-    var formBody = [];
-    for (var property in details) {
-      var encodedKey = encodeURIComponent(property);
-      var encodedValue = encodeURIComponent(details[property]);
-      formBody.push(encodedKey + "=" + encodedValue);
+    getImageVariants(pToken,pImgName){
+        let imgVariants = [];
+        Object.keys(imageVariantsList).forEach((variant)=>{
+            let imageRoute = IMAGE_SERVER_URL+'/uploaded_images/'+pToken+imageVariantsList[variant]+pImgName;
+            imgVariants.push((
+                <a href={imageRoute} target="_blank">
+                    <img className={styles.uploaded_image} src={imageRoute} />       
+                    <p>{variant}</p>
+                </a>
+            ));
+          //console.log(variant+'->'+imageVariantsList[variant]);
+        });
+        return imgVariants;
+    }  
+    getImageFromParams(){
+        return (decodeURI(this.gup('images'))).split(',');
     }
-    formBody = formBody.join("&");
 
+    getTokenFromParams(){
+        return this.gup('token');
+    }
 
-    fetch("http://localhost:8080/PreprocesamientoImagenes/IngresoUsuario",
-        {
-            method: "POST",
-            headers: { 
-                "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"  
-            },
-            body: formBody
-        })
-        .then((res)=>{
-            console.log(res.json());
+    getMetricasFromParams(){
+        return this.gup('metricas');
+    }
 
-          })
-        .catch((error)=>{console.log(error);}) 
-  }
+    getImageNameFromRoute(pRoute){
+        let imgName = pRoute.split('\\');
+        imgName = imgName[imgName.length-1];
+        imgName = this.removerComillasNombre(imgName);
+        return imgName;
+    }
 
-  /**
- * Send a email when the user log in a diferent device
- * @param  {string} pEmail - user email
- 
-export function sendLoginEmail(pEmail, pSubject, pEmailBody){
-    let emailData = {
-        email:pEmail,
-        subject:pSubject,
-        text:pEmailBody
-    };
-    fetch("https://www.akurey.com/akurey/vaultemail",
-        {
-            method: "POST",
-            headers: {  
-                "Content-type": "application/json; charset=UTF-8"  
-            },
-            body: JSON.stringify(emailData)
-        })
-        .then((res)=>{
-            console.log(res.json());
+    getImages(){
+        const images = this.getImageFromParams();
+        const tokenID = this.getTokenFromParams();
+        const metricas = this.getMetricasFromParams().split("+");
+        this.setState({testId:tokenID}); //updates the testID
+        let imgTags = images.map((route,key)=>{
+            const imgName = this.getImageNameFromRoute(route);
+            let metricasArray = (metricas[key].substring(1,metricas[key].length-1)).split(',');
+            return (
+                <div className={styles.resultContainer} key={key}>
+                    <h2>Imagen: {imgName}</h2>
+                    <div className={styles.imageVariants}>
+                        {this.getImageVariants(tokenID,imgName)}
+                    </div>
+                    <h3> Valores de Métricas </h3>
+                    <div>
+                        <p> MSE: {metricasArray[0]}</p>
+                        <p> AD: {metricasArray[1]}</p>
+                        <p> MAE: {metricasArray[2]}</p>
+                        <p> MAE: {metricasArray[3]}</p>
+                        <p> PSNR: {metricasArray[4]}</p>
 
-          })
-        .catch((error)=>{console.log(error);})           
-}
-*/
+                    </div>
+                </div>
+            )
+        }); 
+        this.setState({imgTags:imgTags});
+    }
+   
+    render() {
+        return(
+            <div className={styles.page_two__container}>
+                <h1> Imágenes cargadas </h1>
+                <p> Las imagenes han sido cargadas exitosamente, presione el boton para iniciar el procesamiento</p>
+                <button onClick={()=>this.getImages()}>Cargar Resultado</button>
+                
+                <h2>Id de la prueba: {this.state.testId}</h2>
+                <div className={styles.images_container}>
+                    {this.state.imgTags}
+                </div>
 
-  render() {
-    
-    return(
-      <div className={styles.page_two__container}>
-        <h1 > Imágenes cargadas </h1>
-        <p> Las imagenes han sido cargadas exitosamente, presione el boton para iniciar el procesamiento</p>
-        <button onClick={()=>this.getImages()}>Cargar Resultado</button>
-        <button onClick={()=>this.llamarAJava()}>Cargar Mensaje de Tomcat</button>
-        
-        <h2>Mensaje de ApplicationServer: {this.state.serverMsg}</h2>
-        <h2>Id de la prueba: {this.state.testId}</h2>
-        <div className={styles.images_container}>
-          {this.state.imgTags}
-        </div>
-
-        
-        <button>
-          <Link to={'/'}>Regresar a la página principal</Link>
-        </button>
-        
-      </div>
-    );
-  }
+            
+                <button>
+                  <Link to={'/'}>Regresar a la página principal</Link>
+                </button>
+            </div>
+        );
+    }
 
 }
 

@@ -17,58 +17,112 @@ const messages = defineMessages({
 
 class Dashboard extends React.Component {
   
-  constructor(props) {
-    super(props);
-    this.state = {
-      customFieldEmpty: false
-    };
+    constructor(props) {
+        super(props);
+        this.state = {
+            showGaussOptions: false,
+            showBilateralOptions: false,
+        };
+    } 
 
-  } 
+    handleGaussChange(){
+        this.setState({showGaussOptions:!this.state.showGaussOptions});
+    }
 
-  loadImages(pEvent){
-    let files = document.getElementById('files_input').value;
-      if (files) {
-          console.log(files);
-          //console.log("Name: " + file.name + "\n" + "Last Modified Date :" + file.lastModifiedDate);
-      }else{
-        console.log('no file');
-      }
-  }
-  
+    handleBilateralChange(){
+        this.setState({showBilateralOptions:!this.state.showBilateralOptions});
+    }
 
-  render() {
-    return(
-      <div className={styles.home__container}>
-        <h1> Prepocesamiento de Imágenes </h1>
-        <div>
-          <h2>Por favor seleccione las imágenes que desea procesar</h2>
-          <br/>
-          <label>
-            Parametro 1: &nbsp; 
-            <input type="text" name="param1"/>
-          </label>
-          <br />
-          <label>
-            Parametro 2: &nbsp; 
-            <input type="text" name="param2"/>
-          </label>
-          <br/>
-          <br/>
-          <form action="http://192.168.43.129:3001/sendfiles" method="post" encType="multipart/form-data">
-            <input type="file" name="images[]" multiple/><br/>
-            <br/>
-            
-            <input type="submit" name="submit"/>
-            
-          </form>
-        </div>
+    renderGaussOptions(){
+            if(this.state.showGaussOptions){
+                return(
+                    <div className={styles.optionsDiv}>       
+                        <p>Tamaño del Kernel </p>
+                        <label className={styles.optionsDiv}>
+                            <input type="number" name="gaussParams"/>
+                            <span>filas x</span>
+                            <input type="number" name="gaussParams"/>
+                            <span>columnas</span>
+                        </label>
+                
+                        <p>Desviación</p>
+                        <label className={styles.optionsDiv}>
+                            <input type="text" name="gaussParams" />
+                            <span>  Ejemplo: 5.25</span>
+                        </label>
+                    </div>
+                );
+            }else{
+                return(
+                    null
+                );
+            }
+    }
 
-        <br/>
-        
-        {/*<Link className="link_to_page_two" to={'/page_two'}>Go to page 2</Link>*/}
-      </div>
-    );
-  }
+    renderBilateralOptions(){
+            if(this.state.showBilateralOptions){
+                return(
+                    <div className={styles.optionsDiv}>       
+                        <p>Tamaño del Kernel </p>
+                        <label className={styles.optionsDiv}>
+                            <input type="number" name="bilateralParams"/>
+                            <span>filas x</span>
+                            <input type="number" name="bilateralParams"/>
+                            <span>columnas</span>
+                        </label>
+                
+                        <p>Desviacion del dominio de la intensidad</p>
+                        <label className={styles.optionsDiv}>
+                            <input type="text" name="bilateralParams" />
+                            <span>  Ejemplo: 5.25</span>
+                        </label>
+                        <p>Desviación del dominio del espacio</p>
+                        <label className={styles.optionsDiv}>
+                            <input type="text" name="bilateralParams" />
+                            <span>  Ejemplo: 5.25</span>
+                        </label>
+                    </div>
+                );
+            }else{
+                return(
+                    null
+                );
+            }
+    }
+
+    render() {
+        return(
+            <div className={styles.home__container}>
+                <h1> Prepocesamiento de Imágenes </h1>
+                    <form action={IMAGE_SERVER_URL+"/sendfiles"} method="post" encType="multipart/form-data">
+
+                        <h2>Seleccione las imágenes que desea procesar</h2>
+                        <input type="file" name="images[]" multiple/><br/>
+                        <br/>
+                        <div>
+                            <span> Nivel de Ruido: </span>
+                            <input type="number" name="noise"/> 
+                        </div>
+                        <h2>Seleccione los filtros que desea aplicar a las imágenes</h2>
+                        <div>
+                            <input type="checkbox" name="Gauss" onChange={()=>this.handleGaussChange()}/> Filtro Gaussiano<br/>
+                            {this.renderGaussOptions()}
+                        </div>
+                        <div>
+                            <input type="checkbox" name="Bilateral" onChange={()=>this.handleBilateralChange()}/> Filtro Bilateral<br/>
+                            {this.renderBilateralOptions()}
+                        </div>
+                        <div>
+                            <input type="checkbox" name="Clahe"/> 
+                            <span> Clahe</span>
+                        </div>
+                        <input type="submit" value="Procesar Imágenes"/>
+
+                    </form>
+                            
+            </div>
+        );
+    } 
 
 }
 

@@ -37,6 +37,8 @@ import configureStore from './store/configureStore';
 import { setRuntimeVariable } from './actions/runtime';
 import { setLocale } from './actions/intl';
 import { port, auth, locales, currentEnvironment } from './config';
+import {APP_SERVER_URL} from './constants/';
+
 const multer = require('multer');
 const fs = require('fs');
 const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
@@ -114,7 +116,7 @@ app.use('/graphql', expressGraphQL(req => ({
 /***************/
 /***************/
 /***************/
-
+/*
  
 app.use('/proxy', proxy('localhost:8080/PreprocesamientoImagenes/IngresoUsuario', {
   filter: function(req, res) {
@@ -122,10 +124,17 @@ app.use('/proxy', proxy('localhost:8080/PreprocesamientoImagenes/IngresoUsuario'
   }
 }));
 
+*/
+function removerComillasNombre(pPalabra){
+    let palabra = '';
+    for(let letra in pPalabra){
+        if(pPalabra[letra]!=='\"'){
+            palabra+=pPalabra[letra];
+        }
+    }
+    return palabra;
+}
 
-app.get('/uploaded_images/*', function (req, res) {
-    res.sendFile(path.join(__dirname +'/../..'+decodeURI(req.url)));
-  });
 
 /**
  * Generates a random token
@@ -144,6 +153,11 @@ function generateRandomToken(pLength){
 
 testName = generateRandomToken(tokenLength);
 
+app.get('/uploaded_images/*', function (req, res) {
+    res.sendFile(path.join(__dirname +'/../..'+decodeURI(req.url)));
+  });
+
+
 const storage = multer.diskStorage({
   destination: function(req, file, cb){
     const dir = '../uploaded_images/'+testName;
@@ -159,18 +173,37 @@ const storage = multer.diskStorage({
 
 const upload = multer({storage:storage});
 
-app.post('/sendfiles',upload.any(),function(req,res,next){
- 
-  uploadedImagesRoute = req.files.map(function(image){
-    return '"'+image.path+'"';
-  });
-  console.log(uploadedImagesRoute);
-  const lastUsedToken = testName;
-  testName = generateRandomToken(tokenLength); 
-  //res.send(req.files);
-  res.redirect('http://localhost:'+port+'/results?token='+lastUsedToken
-    +'&images='+encodeURI( uploadedImagesRoute )
-  );
+app.post('/sendfiles',upload.any(),function(req,res){
+    const lastUsedToken = testName;
+    testName = generateRandomToken(tokenLength);
+    let redirectRoute = APP_SERVER_URL+'/Prepro/AppServer?token='+lastUsedToken;
+    
+    uploadedImagesRoute = req.files.map(function(image){
+        return '"'+image.path+'"';
+    });
+
+    if(uploadedImagesRoute!=''){
+        redirectRoute += '&images='+encodeURI( uploadedImagesRoute );
+    }
+    if(req.body.gaussParams){
+        let gauss = JSON.stringify(req.body.gaussParams);
+        gauss = removerComillasNombre(gauss.substring(1,gauss.length-1));
+        redirectRoute += '&gauss='+gauss;
+    }
+    if(req.body.bilateralParams){
+        let bilateral = JSON.stringify(req.body.bilateralParams);
+        bilateral = removerComillasNombre(bilateral.substring(1,bilateral.length-1));
+        redirectRoute += '&bilateral='+bilateral;
+    }
+    if(req.body.clahe){
+        redirectRoute += '&clahe=true';
+    }
+    if(req.body.noise){
+        let noise = JSON.stringify(req.body.noise);
+        noise = removerComillasNombre(noise.substring(1,noise.length-1));
+        redirectRoute += '&noise='+noise;
+    }
+    res.redirect(redirectRoute);
 },upload.any());
 
 

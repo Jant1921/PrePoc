@@ -11,39 +11,35 @@
 
 :root {
 
-  /*
-   * Typography
-   * ======================================================================== */
+    /*
+    * Typography
+    * ======================================================================== */
 
-  --font-family-base: 'Segoe UI',sans-serif;
- 
-  /*
-   * Layout
-   * ======================================================================== */
+    --font-family-base: 'Segoe UI',sans-serif;
 
-  --max-content-width: 1000px;
-  --min-content-height: 500px;
-  --min-content-width: 260px;
+    /*
+    * Layout
+    * ======================================================================== */
 
-  /*
-   * Media queries breakpoints
-   * ======================================================================== */
+    --max-content-width: 1000px;
+    --min-content-height: 500px;
+    --min-content-width: 260px;
 
-  --screen-xs-min: 480px;  /* Extra small screen / phone */
-  --screen-sm-min: 768px;  /* Small screen / tablet */
-  --screen-md-min: 992px;  /* Medium screen / desktop */
-  --screen-lg-min: 1200px; /* Large screen / wide desktop */
-  --redish: #F8234A;
-  --dark: #3F4443;
-  --blueish: #0A5F6D;
-  --turquoish: #52BE92;
-  --light: #A1A8A5;
-  --link-color: #0A5F6D;
+    /*
+    * Media queries breakpoints
+    * ======================================================================== */
+
+    --screen-xs-min: 480px;  /* Extra small screen / phone */
+    --screen-sm-min: 768px;  /* Small screen / tablet */
+    --screen-md-min: 992px;  /* Medium screen / desktop */
+    --screen-lg-min: 1200px; /* Large screen / wide desktop */
+    --redish: #F8234A;
+    --dark: #3F4443;
+    --blueish: #0A5F6D;
+    --turquoish: #52BE92;
+    --light: #A1A8A5;
+    --link-color: #0A5F6D;
 }
-
-  /*
-   * Vault Icons - Fonts
-   * ======================================================================== */
 
 html, body, div, span, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
@@ -141,5 +137,29 @@ input, select {
 }
 
 button{
-  margin: 1em 0;
+    margin: 1em 0;
+}
+
+/**Custom Styles**/
+
+h1{
+    margin: 1em 0;
+    font-size: 2em;
+}
+h2{
+    margin: 0.4em 0;
+    font-size: 1.4em; 
+}
+h3{
+    margin: 0.2em 0;
+    font-size: 1.1em; 
+}
+a{
+    margin: 2em 0;
+    color: var(--link-color);
+    font-size: 1em;
+}
+
+p{
+    font-weight: 400
 }
