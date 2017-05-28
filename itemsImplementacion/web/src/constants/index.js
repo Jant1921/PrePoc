@@ -13,6 +13,6 @@ export const GET_BACK_BTN_STATE = 'GET_BACK_BTN_STATE';
 /*Auth messages for forgot password*/
 export const AUTH_USER_NOT_FOUND = 'auth/user-not-found';
 export const AUTH_INVALID_EMAIL = 'auth/invalid-email';
-export const SERVER_IP = 'http://192.168.43.129';
+export const SERVER_IP = 'http://localhost';
 export const IMAGE_SERVER_URL = SERVER_IP+':3001';
 export const APP_SERVER_URL = SERVER_IP+':8080';

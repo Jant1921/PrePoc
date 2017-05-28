@@ -143,19 +143,19 @@ button{
 /**Custom Styles**/
 
 h1{
-    margin: 1em 0;
+    padding: 1em 0;
     font-size: 2em;
 }
 h2{
-    margin: 0.4em 0;
+    padding: 0.4em 0;
     font-size: 1.4em; 
 }
 h3{
-    margin: 0.2em 0;
+    padding: 0.2em 0;
     font-size: 1.1em; 
 }
 a{
-    margin: 2em 0;
+    margin: 1em 0;
     color: var(--link-color);
     font-size: 1em;
 }

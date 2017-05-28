@@ -18,11 +18,11 @@ const imageVariantsList = {
     'Original':'/',
     'Escala de Grises':'/gris_',
     'Imagen con Ruido':'/noise_',
-    'Filtro Bilateral':'/bilateral_',
-    'Clahe':'/clahe_',
-    'Clahe Gauss':'/claheGauss_',
     'Clahe Escala de Grises' : '/claheGris_',
+    'Filtro Bilateral':'/bilateral_',
+    'Clahe Bilateral':'/clahe_',
     'Filtro Gaussiano':'/gauss_',
+    'Clahe Gauss':'/claheGauss_',
 };
 
 
@@ -34,6 +34,9 @@ class Results extends React.Component {
       customFieldEmpty: false,
       imgTags: [],
       testId: '',
+      imagesNames: [],
+      imagesMetrics: [],
+      actualImage: 0,
       serverMsg: 'nada :('
     };
 
@@ -90,7 +93,6 @@ class Results extends React.Component {
                     <p>{variant}</p>
                 </a>
             ));
-          //console.log(variant+'->'+imageVariantsList[variant]);
         });
         return imgVariants;
     }  
@@ -113,51 +115,102 @@ class Results extends React.Component {
         return imgName;
     }
 
+    changeImageResult(pKey){
+      this.setState({
+        actualImage: pKey
+      });
+    }
+
     getImages(){
         const images = this.getImageFromParams();
         const tokenID = this.getTokenFromParams();
         const metricas = this.getMetricasFromParams().split("+");
         this.setState({testId:tokenID}); //updates the testID
+        let imagesNames = [];
+        let imagesMetrics = [];
         let imgTags = images.map((route,key)=>{
             const imgName = this.getImageNameFromRoute(route);
             let metricasArray = (metricas[key].substring(1,metricas[key].length-1)).split(',');
+            imagesNames.push(
+                <p onClick={()=>this.changeImageResult(key)}>
+                  {imgName}
+                </p>
+              );
+            let actualImageMetrics = (
+              <div className={styles.metrics}>
+                <p> MSE: 
+                  <p className={styles.metricValue}>
+                    {metricasArray[0]}
+                  </p>
+                </p>
+                <p> AD: 
+                  <p className={styles.metricValue}>
+                    {metricasArray[1]}
+                  </p>
+                </p>
+                <p> MAE: 
+                  <p className={styles.metricValue}>
+                    {metricasArray[2]}
+                  </p>
+                </p>
+                <p> AE: 
+                  <p className={styles.metricValue}>
+                    {metricasArray[3]}
+                  </p>
+                </p>
+                <p> PSNR: 
+                  <p className={styles.metricValue}>
+                    {metricasArray[4]}
+                  </p>
+                </p>
+              </div>
+            );
+            imagesMetrics.push(actualImageMetrics);
             return (
                 <div className={styles.resultContainer} key={key}>
                     <h2>Imagen: {imgName}</h2>
                     <div className={styles.imageVariants}>
                         {this.getImageVariants(tokenID,imgName)}
-                    </div>
-                    <h3> Valores de Métricas </h3>
-                    <div>
-                        <p> MSE: {metricasArray[0]}</p>
-                        <p> AD: {metricasArray[1]}</p>
-                        <p> MAE: {metricasArray[2]}</p>
-                        <p> MAE: {metricasArray[3]}</p>
-                        <p> PSNR: {metricasArray[4]}</p>
-
-                    </div>
+                    </div> 
                 </div>
             )
         }); 
-        this.setState({imgTags:imgTags});
+        this.setState({
+          imgTags:imgTags,
+          imagesNames:imagesNames,
+          imagesMetrics:imagesMetrics,
+          });
     }
    
     render() {
         return(
             <div className={styles.page_two__container}>
-                <h1> Imágenes cargadas </h1>
-                <p> Las imagenes han sido cargadas exitosamente, presione el boton para iniciar el procesamiento</p>
-                <button onClick={()=>this.getImages()}>Cargar Resultado</button>
-                
-                <h2>Id de la prueba: {this.state.testId}</h2>
-                <div className={styles.images_container}>
-                    {this.state.imgTags}
+                <div className={styles.header}>
+                  <div>
+                    <h1> Resultado de Preprocesamiento </h1>
+                    <h2>Id de la prueba: {this.state.testId}</h2>
+                    <h2> Lista de Imagenes Procesadas </h2>
+                    <div className={styles.imagesList}>
+                      {this.state.imagesNames}
+                    </div>
+
+                    <button>
+                      <Link to={'/'}>Regresar a la página principal</Link>
+                    </button>
+                  </div>
+                  <div>
+                    <h2>Métricas de Imagen</h2>
+                    {this.state.imagesMetrics[this.state.actualImage]}
+                  </div>
                 </div>
 
+                <div className={styles.images_container}>
+                    {this.state.imgTags[this.state.actualImage]}
+                </div>
+              
+                
             
-                <button>
-                  <Link to={'/'}>Regresar a la página principal</Link>
-                </button>
+                
             </div>
         );
     }

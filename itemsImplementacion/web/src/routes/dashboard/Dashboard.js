@@ -93,7 +93,8 @@ class Dashboard extends React.Component {
     render() {
         return(
             <div className={styles.home__container}>
-                <h1> Prepocesamiento de Imágenes </h1>
+                <div className={styles.center__container}>
+                    <h1> Prepocesamiento de Imágenes </h1>
                     <form action={IMAGE_SERVER_URL+"/sendfiles"} method="post" encType="multipart/form-data">
 
                         <h2>Seleccione las imágenes que desea procesar</h2>
@@ -119,7 +120,7 @@ class Dashboard extends React.Component {
                         <input type="submit" value="Procesar Imágenes"/>
 
                     </form>
-                            
+                </div>   
             </div>
         );
     } 
