@@ -111,7 +111,7 @@ public class AppServer extends HttpServlet {
 			valoresMetricas = valoresMetricas.substring(0, valoresMetricas.length()-1);
 			response.getWriter().append("Procesando...");
 			
-			response.sendRedirect("http://192.168.43.129:3001/results?token="+token+"&images="+request.getParameter("images")+"&metricas="+valoresMetricas);
+			response.sendRedirect("http://localhost:3001/results?token="+token+"&images="+request.getParameter("images")+"&metricas="+valoresMetricas);
 		}else{
 			response.getWriter().append("Error: Debe seleccionar la menos una imagen para procesar\n");
 		}

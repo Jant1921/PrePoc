@@ -1,6 +1,5 @@
 
 import React from 'react';
-import Layout from '../../components/Layout';
 import Dashboard from './Dashboard';
 
 const title = 'Dashboard';
