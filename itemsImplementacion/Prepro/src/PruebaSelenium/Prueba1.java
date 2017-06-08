@@ -29,7 +29,7 @@ public class Prueba1 {
   public void testUnpuntojava() throws Exception {
     driver.get(baseUrl + "/");
     driver.findElement(By.name("images[]")).clear();
-    driver.findElement(By.name("images[]")).sendKeys("C:\\Users\\L45-B4208FL\\Pictures\\k berga.jpg");
+    driver.findElement(By.name("images[]")).sendKeys("C:\\Users\\L45-B4208FL\\Pictures\\b.jpg");
     driver.findElement(By.name("images[]")).clear();
     driver.findElement(By.name("images[]")).sendKeys("C:\\Users\\L45-B4208FL\\Pictures\\a.jpg");
     driver.findElement(By.id("0")).clear();
